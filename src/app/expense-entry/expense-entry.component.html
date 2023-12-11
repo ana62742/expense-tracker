@@ -1,0 +1,46 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Expense Entry Form</h5>
+          <form [formGroup]="expenseForm" (ngSubmit)="saveExpense()">
+            <div class="mb-3">
+              <label for="category" class="form-label">Expense Category:</label>
+              <select id="category" class="form-select" formControlName="category" required>
+                <option value="" disabled selected>Select a category</option>
+                <option *ngFor="let category of expenseCategories" [value]="category">{{ category }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="amount" class="form-label">Expense Amount:</label>
+              <input type="number" class="form-control" id="amount" formControlName="amount" required>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="!expenseForm.valid">Save Expense</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ day }}</h5>
+          <div *ngIf="expenseSaved">
+            <div *ngFor="let expense of getExpensesByDay()" class="mb-3">
+              <div>
+                <strong>Category:</strong> {{ expense.category }}
+              </div>
+              <div>
+                <strong>Amount:</strong> {{ expense.amount }}
+              </div>
+            </div>
+            <p class="mb-3">
+              <strong>Daily Total:</strong> {{ getDailyTotal() }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

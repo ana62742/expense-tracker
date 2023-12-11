@@ -1,0 +1,30 @@
+<div class="container mt-4">
+  <ul class="nav nav-tabs" id="myTabs">
+    <li *ngFor="let day of days" class="nav-item">
+      <a class="nav-link" [routerLink]="['/expense-tracker/', day]" routerLinkActive="active">
+        {{ day }}
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['/expense-tracker/summary']" routerLinkActive="active">
+        Summary
+      </a>
+    </li>
+  </ul>
+
+  <div *ngIf="selectedDay !== 'summary'">
+    <app-expense-entry [day]="selectedDay"></app-expense-entry>
+  </div>
+  <div class="tab-pane fade" [class.show]="selectedDay === 'summary'" id="summary" *ngIf="selectedDay === 'summary'">
+    <app-summary></app-summary>
+  </div>
+
+  <div class="mt-4 text-center">
+    <button class="btn btn-primary ml-2" [routerLink]="['/expense-tracker/', getPreviousDay()]" *ngIf="selectedDay !== 'Monday' && selectedDay !== 'summary'" style="float: left; margin-left: 12px;">
+      Previous
+    </button>
+    <button class="btn btn-success ml-2" [routerLink]="['/expense-tracker/', getNextDay()]" *ngIf="selectedDay !== 'Sunday' && selectedDay !== 'summary'" style="float: right; margin-right: 12px;">
+      Next
+    </button>
+  </div>
+</div>

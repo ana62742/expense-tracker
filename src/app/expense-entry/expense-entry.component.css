@@ -1,0 +1,18 @@
+.expense-form-container {
+    margin-bottom: 20px;
+  }
+  
+  .expense-saved-container {
+    margin-top: 20px;
+  }
+  
+  .expense-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .add-expense-btn {
+    margin-top: 10px;
+  }
+  
