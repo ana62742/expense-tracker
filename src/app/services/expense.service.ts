@@ -5,6 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class ExpenseService {
   private expenses: { [day: string]: { category: string; amount: number }[] } = {};
+  private weeklyBudget: number | null = null;
+  private savings: number = 0;
 
   constructor() {
     this.loadExpenses();
@@ -91,5 +93,14 @@ export class ExpenseService {
     });
 
     return result;
+  }
+
+  setWeeklyBudget(budget: number): void {
+    localStorage.setItem('weeklyBudget', JSON.stringify(budget));
+  }
+  
+  getWeeklyBudget(): number | null {
+    const storedBudget = localStorage.getItem('weeklyBudget');
+    return storedBudget ? JSON.parse(storedBudget) : null;
   }
 }

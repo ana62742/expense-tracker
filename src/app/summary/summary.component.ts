@@ -14,6 +14,8 @@ export class SummaryComponent implements OnInit {
   weeklyExpenses: any[] = [];
   weeklyExpensesByCategory: any[] = [];
   weeklyTotal: any;
+  weeklyBudget: any;
+  weeklySavings: any;
 
   expenseService = inject(ExpenseService);
 
@@ -23,5 +25,7 @@ export class SummaryComponent implements OnInit {
     this.weeklyExpenses = this.expenseService.getWeeklyExpenses();
     this.weeklyExpensesByCategory = this.expenseService.getWeeklyExpensesByCategory();
     this.weeklyTotal = this.expenseService.getWeeklyTotal();
+    this.weeklyBudget = this.expenseService.getWeeklyBudget();
+    this.weeklySavings = this.weeklyBudget - this.weeklyTotal;
   }
 }
