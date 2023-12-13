@@ -5,8 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class ExpenseService {
   private expenses: { [day: string]: { category: string; amount: number }[] } = {};
-  private weeklyBudget: number | null = null;
-  private savings: number = 0;
 
   constructor() {
     this.loadExpenses();
@@ -72,12 +70,9 @@ export class ExpenseService {
   getWeeklyExpensesByCategory(): { category: string; amount: number }[] {
     const weeklyExpensesByCategory: { [category: string]: number } = {};
 
-    // Iterate through each day
     Object.values(this.expenses).forEach((dayExpenses) => {
       if (dayExpenses) {
-        // Iterate through each expense in the day
         dayExpenses.forEach((expense) => {
-          // Aggregate expenses by category
           if (!weeklyExpensesByCategory[expense.category]) {
             weeklyExpensesByCategory[expense.category] = 0;
           }
@@ -86,7 +81,6 @@ export class ExpenseService {
       }
     });
 
-    // Convert the aggregated expenses to the desired format
     const result: { category: string; amount: number }[] = [];
     Object.entries(weeklyExpensesByCategory).forEach(([category, amount]) => {
       result.push({ category, amount });
