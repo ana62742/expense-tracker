@@ -1,5 +1,3 @@
-// tabbed-expense-tracker.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { ExpenseEntryComponent } from '../expense-entry/expense-entry.component';
 import { CommonModule } from '@angular/common';
@@ -9,7 +7,7 @@ import { SummaryComponent } from '../summary/summary.component';
 @Component({
   selector: 'app-tabbed-expense-tracker',
   standalone: true,
-  imports: [CommonModule, ExpenseEntryComponent, SummaryComponent, RouterModule],
+  imports: [CommonModule, ExpenseEntryComponent, RouterModule, SummaryComponent],
   templateUrl: './tabbed-expense-tracker.component.html',
   styleUrls: ['./tabbed-expense-tracker.component.css'],
 })

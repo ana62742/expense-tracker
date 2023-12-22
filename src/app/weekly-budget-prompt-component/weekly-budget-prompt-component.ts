@@ -16,8 +16,9 @@ export class WeeklyBudgetPromptComponent {
   constructor(private expenseService: ExpenseService, private router: Router) {}
 
   saveBudget(): void {
-    this.expenseService.setWeeklyBudget(this.weeklyBudget);
-    this.router.navigate(['/expense-tracker/Monday'])
+    const weekStartDate = new Date(2020, 5, 0);
+    const budget = { amount: this.weeklyBudget, weekStartDate };
+    this.expenseService.setWeeklyBudget(budget);
+    this.router.navigate(['/expense-tracker/Monday']);
   }
-
 }

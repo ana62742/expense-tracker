@@ -1,11 +1,11 @@
 <div class="container mt-4">
-  <div class="row" *ngIf="weeklyExpensesByCategory.length > 0">
+  <div class="row" *ngIf="weeklyExpenses$ | async">
     <div class="col-md-8">
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">Weekly Expenses Summary</h4>
           <dx-data-grid
-            [dataSource]="weeklyExpenses"
+            [dataSource]="weeklyExpenses$ | async"
             [showBorders]="true"
             [allowColumnResizing]="true"
             [columnAutoWidth]="true"
@@ -17,6 +17,7 @@
             <dxi-column dataField="day" caption="Day" [width]="150"></dxi-column>
             <dxi-column dataField="category" caption="Category" [width]="200"></dxi-column>
             <dxi-column dataField="amount" caption="Amount" [width]="150"></dxi-column>
+
           </dx-data-grid>
         </div>
       </div>
@@ -25,19 +26,19 @@
         <div class="card-body bg-info text-white">
           <div class="d-flex justify-content-between align-items-center">
             <span class="font-weight-bold">Weekly Total:</span>
-            <span>{{ weeklyTotal }}</span>
+            <span>{{ weeklyTotal$ | async }}</span>
           </div>
         </div>
       </div>
 
-      <div class="card mt-4">
+      <div *ngIf="weeklyBudget$ | async as weeklyBudget" class="card mt-4">
         <div class="card-body bg-success text-white">
           <div class="d-flex justify-content-between align-items-center">
             <span class="font-weight-bold">Weekly Savings:</span>
-            <span>{{ weeklySavings }}</span>
+            <span>{{ weeklyBudget - (weeklyTotal$ | async) }}</span>
           </div>
         </div>
-      </div>
+      </div>           
     </div>
 
     <div class="col-md-4">
@@ -45,7 +46,7 @@
         <div class="card-body">
           <h4 class="card-title">Your Expense Categories</h4>
           <dx-pie-chart
-            [dataSource]="weeklyExpensesByCategory"
+            [dataSource]="weeklyExpensesByCategory$ | async"
           >
             <dxi-series
               type="doughnut"
@@ -58,7 +59,7 @@
     </div>
   </div>
 
-  <div class="col-md-8" *ngIf="weeklyExpensesByCategory.length == 0">
+  <div class="col-md-8" *ngIf="(weeklyExpensesByCategory$ | async)?.length == 0">
     <div class="card-body">
       <h4 class="card-title">No expenses have been recorded.</h4>
       <p>Please enter your weekly expenses to view your expense summary.</p>

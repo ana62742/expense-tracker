@@ -2,8 +2,8 @@ import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ExpenseService } from '../services/expense.service';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
+import { Observable, filter, of } from 'rxjs';
 
 @Component({
   selector: 'app-expense-entry',
@@ -15,12 +15,12 @@ import { filter } from 'rxjs';
 export class ExpenseEntryComponent implements OnInit {
   @Input() day: string = '';
 
-  expenseService = inject(ExpenseService); 
-  router = inject(Router);
-
   expenseForm!: FormGroup;
   expenseSaved: boolean = false;
   savedExpense!: { category: string; amount: number };
+
+  dailyExpenses$: Observable<any[]> | undefined;
+  dailyTotal$: Observable<any> | undefined;
 
   expenseCategories: string[] = [
     'Rent/Mortgage',
@@ -39,13 +39,16 @@ export class ExpenseEntryComponent implements OnInit {
   ];
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private expenseService: ExpenseService,
+    private router: Router
     ) {}
 
  ngOnInit(): void {
     this.createExpenseForm();
     this.subscribeToRouteChanges();
-    this.loadExpenses();
+    this.getDailyExpenses();
+    this.getDailyTotal();
   }
 
   createExpenseForm(): void {
@@ -59,17 +62,9 @@ export class ExpenseEntryComponent implements OnInit {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
-        this.loadExpenses();
+        this.getDailyExpenses();
       });
-  }
-
-  loadExpenses(): void {
-    const expenses = this.expenseService.getExpensesByDay(this.day);
-    if (expenses.length > 0) {
-      this.expenseSaved = true;
-      this.savedExpense = { ...expenses[expenses.length - 1] };
-    }
-  }
+  }  
 
   saveExpense(): void {
     const categoryControl = this.expenseForm.get('category');
@@ -88,13 +83,23 @@ export class ExpenseEntryComponent implements OnInit {
       this.expenseSaved = true;
       this.expenseForm.reset();
     }
+  }  
+
+  async getDailyExpenses() {
+    try {
+      const expenses = await this.expenseService.getExpensesByDay(this.day);
+      this.dailyExpenses$ = of(expenses);
+    } catch (error) {
+      console.error('Error loading expenses:', error);
+    }
   }
 
-  getExpensesByDay(): { category: string; amount: number }[] {
-    return this.expenseService.getExpensesByDay(this.day);
-  }
-
-  getDailyTotal() {
-    return this.expenseService.getDailyTotal(this.day);
-  }
+  async getDailyTotal() {
+    try {
+      const total = await this.expenseService.getDailyTotal(this.day);
+      this.dailyTotal$ = of(total);
+    } catch (error) {
+      console.error('Error loading expenses:', error);
+    }
+  }  
 }
