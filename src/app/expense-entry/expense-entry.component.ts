@@ -2,8 +2,8 @@ import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ExpenseService } from '../services/expense.service';
 import { CommonModule } from '@angular/common';
-import { NavigationEnd, Router } from '@angular/router';
-import { Observable, filter, of } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Observable, filter, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-expense-entry',
@@ -41,8 +41,9 @@ export class ExpenseEntryComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private expenseService: ExpenseService,
-    private router: Router
-    ) {}
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
  ngOnInit(): void {
     this.createExpenseForm();
@@ -59,12 +60,28 @@ export class ExpenseEntryComponent implements OnInit {
   }
 
   subscribeToRouteChanges(): void {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.getDailyExpenses();
+    this.route.paramMap
+      .pipe(
+        switchMap(params => {
+          this.day = params.get('day') || '';
+          return this.expenseService.getExpensesByDay(this.day);
+        })
+      )
+      .subscribe(expenses => {
+        this.dailyExpenses$ = of(expenses);
       });
-  }  
+    
+    this.route.paramMap
+      .pipe(
+        switchMap(params => {
+          this.day = params.get('day') || '';
+          return this.expenseService.getDailyTotal(this.day);
+        })
+      )
+      .subscribe(total => {
+        this.dailyTotal$ = of(total);
+      });
+  }
 
   saveExpense(): void {
     const categoryControl = this.expenseForm.get('category');
