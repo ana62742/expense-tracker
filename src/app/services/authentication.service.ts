@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-import { catchError, from, Observable, throwError } from 'rxjs';
+import { catchError, from, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  isLoggedIn = false;
+  private _isLoggedIn = false;
+  get isAuthenticated(): boolean {
+    return this._isLoggedIn;
+  }
 
   constructor(
     private auth: AngularFireAuth,
@@ -20,7 +23,8 @@ export class AuthenticationService {
     )).pipe(
       catchError((error: FirebaseError) => 
         throwError(() => new Error(this.translateFirebaseErrorMessage(error)))
-      )
+      ),
+      tap(() => this._isLoggedIn = true)
     );
   }
 
@@ -30,18 +34,21 @@ export class AuthenticationService {
     )).pipe(
       catchError((error: FirebaseError) => 
         throwError(() => new Error(this.translateFirebaseErrorMessage(error)))
-      )
+      ),
+      tap(() => this._isLoggedIn = true)
   );
   }
   
   logout() {
     this.auth.signOut()
       .then(() => {
+        this._isLoggedIn = false;
         this.router.navigate(['/auth']);
       })
       .catch((error) => {
         console.error('Logout error:', error);
-      });
+      })
+      tap(() => this._isLoggedIn = false)
   }
 
   private translateFirebaseErrorMessage({code, message}: FirebaseError) {

@@ -36,8 +36,8 @@ export class ExpenseService {
     });
   }
 
-  addExpense(expense: { category: string; amount: number; day: string }) {
-    fetch('http://localhost:3000/expenses', {
+  addExpense(expense: { category: string; amount: number; day: string }): Promise<any> {
+    return fetch('http://localhost:3000/expenses', {
       method: 'POST',
       body: JSON.stringify({
         category: expense.category,
@@ -49,7 +49,6 @@ export class ExpenseService {
       }
     })
     .then(res => res.json)
-    .then(resData => console.log(resData))
     .catch(err => console.log(err))
   }
   

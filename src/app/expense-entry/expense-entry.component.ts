@@ -94,11 +94,18 @@ export class ExpenseEntryComponent implements OnInit {
         day: this.day,
       };
 
-      this.expenseService.addExpense(newExpense);
-
-      this.savedExpense = { ...newExpense };
-      this.expenseSaved = true;
-      this.expenseForm.reset();
+      this.expenseService.addExpense(newExpense)
+      .then((addedExpense) => {
+        this.savedExpense = { ...addedExpense };
+        this.expenseSaved = true;
+        this.expenseForm.reset();
+        
+        this.getDailyExpenses();
+        this.getDailyTotal();
+      })
+      .catch((error) => {
+        console.error('Error adding expense:', error);
+      });
     }
   }  
 

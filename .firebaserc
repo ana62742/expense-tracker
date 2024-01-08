@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "expensetracker-f1bb5": {
+      "hosting": {
+        "expense-tracker": [
+          "expensetracker-f1bb5"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "expensetracker-f1bb5"
+  }
+}
