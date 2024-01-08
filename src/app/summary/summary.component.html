@@ -7,14 +7,13 @@
           <dx-data-grid
             [dataSource]="weeklyExpenses$ | async"
             [showBorders]="true"
-            [allowColumnResizing]="true"
             [columnAutoWidth]="true"
             [rowAlternationEnabled]="true"
             [hoverStateEnabled]="true"
             class="mt-3"
           >
             <dxo-paging [pageSize]="10"></dxo-paging>
-            <dxi-column dataField="day" caption="Day" [width]="150"></dxi-column>
+            <dxi-column dataField="day" sortOrder="asc" caption="Day" [width]="150"></dxi-column>
             <dxi-column dataField="category" caption="Category" [width]="200"></dxi-column>
             <dxi-column dataField="amount" caption="Amount" [width]="150"></dxi-column>
 
