@@ -1,5 +1,5 @@
-Add your custom styles here
-:host ::ng-deep .dx-datagrid-headers {
+  
+  :host ::ng-deep .dx-datagrid-headers {
     background-color: #f2f2f2; /* Header background color */
     font-weight: bold;
   }

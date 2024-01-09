@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { DxDataGridModule, DxPieChartModule } from 'devextreme-angular';
-import { exportDataGrid } from 'devextreme/excel_exporter';
-import { ExpenseService } from '../services/expense.service';
 import { CommonModule } from '@angular/common';
 import { Observable, of } from 'rxjs';
+import { exportDataGrid } from 'devextreme/excel_exporter';
+import { Workbook } from 'exceljs';
+import { saveAs } from 'file-saver';
+import { ExportingEvent } from 'devextreme/ui/data_grid';
+
+import { ExpenseService } from '../services/expense.service';
 
 @Component({
   selector: 'app-summary',
@@ -62,21 +66,22 @@ export class SummaryComponent implements OnInit {
         console.error('Error loading budget:', error);
       }
     }    
-//   weeklyExpenses: any[] = [];
-//   weeklyExpensesByCategory: any[] = [];
-//   weeklyTotal: any;
-//   weeklyBudget: any;
-//   weeklySavings: any;
 
-//   expenseService = inject(ExpenseService);
-
-//   constructor() {}
-
-//   ngOnInit(): void {
-//     this.weeklyExpenses = this.expenseService.getWeeklyExpenses();
-//     this.weeklyExpensesByCategory = this.expenseService.getWeeklyExpensesByCategory();
-//     this.weeklyTotal = this.expenseService.getWeeklyTotal();
-//     this.weeklyBudget = this.expenseService.getWeeklyBudget();
-//     this.weeklySavings = this.weeklyBudget - this.weeklyTotal;
-//   }
+    onExporting(e: ExportingEvent) {
+      const workbook = new Workbook();    
+      const worksheet = workbook.addWorksheet('Main sheet');
+      exportDataGrid({
+          component: e.component,
+          worksheet: worksheet,
+          customizeCell: function(options) {
+              options.excelCell.font = { name: 'Arial', size: 12 };
+              options.excelCell.alignment = { horizontal: 'left' };
+          } 
+      }).then(function() {
+          workbook.xlsx.writeBuffer()
+              .then(function(buffer: BlobPart) {
+                  saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'DataGrid.xlsx');
+              });
+      });
+  }
 }
