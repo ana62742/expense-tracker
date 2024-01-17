@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "source-map-analyzer": "ng build --configuration=production --source-map",
+    "source-map-explorer": "source-map-explorer dist/expense-tracker/**/*.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -21,12 +23,12 @@
     "@angular/router": "^17.0.7",
     "@capacitor/core": "^5.6.0",
     "bootstrap": "^5.3.2",
-    "capacitor": "^0.5.6",
     "devextreme-angular": "^23.1.6",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "firebase": "^10.7.1",
     "mongoose": "^8.0.3",
+    "openai": "^4.24.3",
     "rxjs": "~7.8.0",
     "rxjs-interop": "^2.0.0",
     "tslib": "^2.6.2",
@@ -37,14 +39,8 @@
     "@angular/cli": "^17.0.1",
     "@angular/compiler-cli": "^17.0.7",
     "@types/file-saver": "^2.0.7",
-    "@types/file-saver-es": "^2.0.3",
     "@types/jasmine": "~5.1.0",
-    "jasmine-core": "~5.1.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
+    "source-map-explorer": "^2.5.3",
     "typescript": "~5.2.2"
   }
 }
