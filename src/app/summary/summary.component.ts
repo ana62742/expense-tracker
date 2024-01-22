@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DxDataGridModule } from 'devextreme-angular/ui/data-grid';
 import { DxPieChartModule } from 'devextreme-angular/ui/pie-chart';
 import { CommonModule } from '@angular/common';
-import { Observable, forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, switchMap, tap } from 'rxjs';
 import { exportDataGrid } from 'devextreme/excel_exporter';
 import { Workbook } from 'exceljs';
 import { saveAs } from 'file-saver';
@@ -21,9 +21,10 @@ import { AIService } from '../services/ai.service';
 export class SummaryComponent implements OnInit {
     weeklyExpenses$!: Observable<any[]>;
     weeklyExpensesByCategory$!: Observable<any[]>;
-    weeklyTotal$!: Observable<any>;
-    investmentRecommendations$!: Observable<any>;
+    weeklyTotal$!: Observable<number>;
     weeklyBudget$!: Observable<number>;
+    weeklySavings!: number;
+    investmentRecommendations!: any[];
 
     constructor(private expenseService: ExpenseService,
                 private aiService: AIService) {}
@@ -33,7 +34,7 @@ export class SummaryComponent implements OnInit {
         this.getWeeklyExpensesByCategory();
         this.getWeeklyTotal();
         this.getWeeklyBudget();
-        this.getInvestmentRecommendations();
+        this.getWeeklySavings();
     }
 
     async getWeeklyExpenses() {
@@ -70,31 +71,33 @@ export class SummaryComponent implements OnInit {
       } catch (error) {
         console.error('Error loading budget:', error);
       }
-    }
+    } 
     
-    async getInvestmentRecommendations() {
+    async getWeeklySavings() {
       try {
-        await this.getWeeklyBudget();
-        await this.getWeeklyTotal();
-        forkJoin([this.weeklyBudget$, this.weeklyTotal$]).subscribe(
-          ([budget, total]) => {
-              const savings = budget - total;
-              this.aiService.getInvestmentRecommendations(savings).subscribe(
-                  (recommendations) => {
-                      this.investmentRecommendations$ = of(recommendations);
-                  },
-                  (error) => {
-                      console.error('Error getting investment recommendations:', error);
-                  }
-              );
-          },
-          (error) => {
-              console.error('Error getting weekly budget and total:', error);
-          }
-      );
-      } catch(error) {
-        console.error('Error generating recomendations:', error);
+          const weeklyTotal = await this.expenseService.getWeeklyTotal();
+          const weeklyBudget = await this.expenseService.getWeeklyBudget(new Date(2020, 5, 0));
+
+          const total = weeklyTotal.weeklyTotal;
+          const budget = weeklyBudget[0].amount;
+
+          this.weeklySavings = budget - total;
+          this.getInvestmentRecommendations();
+      } catch (error) {
+          console.error('Error calculating weekly savings:', error);
       }
+    }
+
+    getInvestmentRecommendations() {
+      this.aiService.getInvestmentRecommendations(this.weeklySavings)
+        .then((response) => {
+          const recommendations = response.recommendations;
+          this.investmentRecommendations = recommendations;
+          console.log(recommendations);
+        })
+        .catch((error) => {
+          console.error('Error getting investment recommendations:', error);
+        });
     }
 
     onExporting(e: ExportingEvent) {

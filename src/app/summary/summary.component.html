@@ -36,19 +36,29 @@
         <div class="card-body bg-success text-white">
           <div class="d-flex justify-content-between align-items-center">
             <span class="font-weight-bold">Weekly Savings:</span>
-            <span>{{ weeklyBudget - (weeklyTotal$ | async) }}</span>
+            <span>{{ weeklySavings }}</span>
           </div>
         </div>
       </div>
-      
-      <div *ngIf="weeklyBudget$ | async as weeklyBudget" class="card mt-4">
-        <div class="card-body bg-danger text-white">
+
+      <div *ngIf="investmentRecommendations !== undefined" class="card mt-4">
+        <div class="card-body bg-light border rounded">
           <div class="d-flex justify-content-between align-items-center">
             <span class="font-weight-bold">Investment recommendations:</span>
-            <span>{{ investmentRecommendations$ | async }}</span>
+            <div *ngIf="investmentRecommendations.length === 0; else recommendationsBlock">
+              Loading recommendations...
+            </div>
+            <ng-template #recommendationsBlock>
+              <ul>
+                <li *ngFor="let recommendation of investmentRecommendations" class="mb-2">
+                  {{ recommendation.text }}
+                </li>
+              </ul>
+            </ng-template>
           </div>
         </div>
-      </div>   
+      </div>      
+      
     </div>
 
     <div class="col-md-4">
