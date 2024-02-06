@@ -93,7 +93,6 @@ export class SummaryComponent implements OnInit {
         .then((response) => {
           const recommendations = response.recommendations;
           this.investmentRecommendations = recommendations;
-          console.log(recommendations);
         })
         .catch((error) => {
           console.error('Error getting investment recommendations:', error);

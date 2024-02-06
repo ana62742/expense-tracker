@@ -6,9 +6,9 @@ import { SummaryComponent } from './summary/summary.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-    { path: 'expense-tracker/:day', component: TabbedExpenseTrackerComponent },
-    { path: 'expense-tracker/summary', component: SummaryComponent },
-    { path: 'weekly-budget-prompt', component: WeeklyBudgetPromptComponent },
+    { path: 'expense-tracker/:day', component: TabbedExpenseTrackerComponent, canActivate: [authGuard]},
+    { path: 'expense-tracker/summary', component: SummaryComponent, canActivate: [authGuard]},
+    { path: 'weekly-budget-prompt', component: WeeklyBudgetPromptComponent, canActivate: [authGuard]},
     { path: 'auth', component: AuthComponent },
     { path: '', redirectTo: '/auth', pathMatch: 'full' },
     { path: '**', redirectTo: '/auth' }

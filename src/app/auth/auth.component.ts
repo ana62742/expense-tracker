@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { AuthenticationService } from '../services/authentication.service';
 import { Router } from '@angular/router';
 import { AngularFireModule } from '@angular/fire/compat';
+import { ExpenseService } from '../services/expense.service';
 
 @Component({
   selector: 'app-auth',
@@ -19,6 +20,7 @@ export class AuthComponent {
 
   constructor(
     private authenticationService: AuthenticationService,
+    private expenseService: ExpenseService,
     private formBuilder: FormBuilder,
     private router: Router
   ) {}

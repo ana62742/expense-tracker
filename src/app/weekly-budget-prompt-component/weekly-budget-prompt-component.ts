@@ -21,4 +21,8 @@ export class WeeklyBudgetPromptComponent {
     this.expenseService.setWeeklyBudget(budget);
     this.router.navigate(['/expense-tracker/Monday']);
   }
+
+  navigateToExpenseTracker() {
+    this.router.navigate(['/expense-tracker/Monday']);
+  }
 }
